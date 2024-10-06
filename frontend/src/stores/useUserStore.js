@@ -64,7 +64,7 @@ export const useUserStore = create((set, get) => ({
   refreshToken: async () => {
     //prevent multiple simultaneous reefresh attemps
 
-    if (get().checkAuth) return;
+    if (get().checkingAuth) return;
 
     set({ checkingAuth: true });
 
@@ -90,6 +90,8 @@ axios.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       try {
+        originalRequest._retry = true;
+        
         //if a refresh is already is progress, await for it to complete
 
         if (refreshPromise) {
